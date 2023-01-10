@@ -1,6 +1,6 @@
 import pytest
 
-from api.models import Indication, Station
+from api.models import Station
 
 
 @pytest.fixture

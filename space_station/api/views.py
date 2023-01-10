@@ -36,10 +36,7 @@ class StationViewSet(viewsets.ModelViewSet):
                 axis = serializer.validated_data.get('axis')
                 if hasattr(station, axis):
                     setattr(station, axis, getattr(station, axis) + distance)
-                if (
-                    station.condition != 'broken'
-                    and getattr(station, axis) <= 0
-                ):
+                if station.condition != 'broken' and getattr(station, axis) <= 0:
                     station.condition = 'broken'
                     station.broken_date = datetime.datetime.now()
                 station.save()

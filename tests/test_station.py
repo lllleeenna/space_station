@@ -1,6 +1,7 @@
 from http import HTTPStatus
 
 import pytest
+
 from api.models import Station
 
 
@@ -99,6 +100,12 @@ class TestStationAPI:
         )
 
         station_count += 1
+
+        assert station_count == Station.objects.count(), (
+            'POST-запрос авторизованного пользователя к '
+            f'{self.station_url} создает новую станцию.'
+        )
+        
         data_station = response.json()
 
         assert isinstance(data_station, dict), (
@@ -175,7 +182,9 @@ class TestStationAPI:
         )
 
         data = response.json()
-        self.check_station_data(data, self.station_detail_url)
+        self.check_station_data(
+            data, f'GET-запрос к {self.station_detail_url}'
+        )
 
     @pytest.mark.parametrize('http_method', ('put', 'patch'))
     def test_station_detail_auth_valid_data(
@@ -201,7 +210,8 @@ class TestStationAPI:
         )
 
         data = response.json()
-        self.check_station_data(data, self.station_detail_url)
+        self.check_station_data(
+            data, f'{http_method.upper()}-запрос к {self.station_detail_url}')
 
     @pytest.mark.parametrize('http_method', ('put', 'patch'))
     def test_station_change_unauth_with_valid_data(
