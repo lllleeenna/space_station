@@ -116,12 +116,10 @@ SIMPLE_JWT = {
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Spase STation API',
+    'TITLE': 'Spase Station API',
     'DESCRIPTION': (
         'Сервис управления космическими станциями.'
         'В сервисе хранится информация о станциях и их позиция в пространстве.'
         'Через сервис можно CRUD станций и изменять их позицию.'
     ),
-    'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': False,
 }

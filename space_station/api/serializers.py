@@ -8,7 +8,6 @@ class StationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Station
-        # fields = '__all__'
         exclude = ('x', 'y', 'z')
         read_only_fields = ('condition', 'broken_date')
 

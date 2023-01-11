@@ -1,7 +1,7 @@
 import datetime
 
 from django.shortcuts import get_object_or_404
-from drf_spectacular.utils import extend_schema, extend_schema_view
+from drf_spectacular.utils import extend_schema
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -36,8 +36,11 @@ class StationViewSet(viewsets.ModelViewSet):
                 axis = serializer.validated_data.get('axis')
                 if hasattr(station, axis):
                     setattr(station, axis, getattr(station, axis) + distance)
-                if station.condition != 'broken' and getattr(station, axis) <= 0:
-                    station.condition = 'broken'
+                if (
+                    station.condition != Station.ChoicesCondition.BROKEN
+                    and getattr(station, axis) <= 0
+                ):
+                    station.condition = Station.ChoicesCondition.BROKEN
                     station.broken_date = datetime.datetime.now()
                 station.save()
                 return Response(

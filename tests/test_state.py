@@ -68,7 +68,6 @@ class TestStateAPI:
         data_state = response.json()
         station = Station.objects.get(id=station_1.id)
 
-
         assert isinstance(data_state, dict), (
             'POST-запрос авторизованного пользователя к '
             f'{self.state_url} не вернул ответ в виде словаря.'
@@ -103,7 +102,6 @@ class TestStateAPI:
                 'то значение поля condition не должно изменится.'
             )
 
-
     @pytest.mark.parametrize('axis', ('x', 'y', 'z'))
     def test_state_unauth_create(self, client, axis):
 
@@ -122,4 +120,44 @@ class TestStateAPI:
         assert indication_count == Indication.objects.count(), (
             'POST-запрос неавторизованного пользователя к '
             f'{self.state_url} не должен создавать новую запись в таблице.'
+        )
+
+    def test_state_auth_create_with_invalid_data(self, user_client, station_1):
+        data = {'axis': 'x', 'distance': ''}
+        indication_count = Indication.objects.count()
+
+        response = user_client.post(
+                self.state_url.format(id=station_1.id), data=data
+            )
+
+        assert response.status_code == HTTPStatus.BAD_REQUEST, (
+            'Для авторизованного пользователя POST-запрос с некорректными'
+            f'данными к {self.state_url.format(id=station_1.id)} '
+            'должен вернуть ответ со статусом 400.'
+        )
+
+        assert indication_count == Indication.objects.count(), (
+            'POST-запрос с некорректными данными к '
+            f'{self.state_url.format(id=station_1.id)} '
+            'не должен создавать запись в таблице Indication.'
+        )
+
+        station = Station.objects.get(id=station_1.id)
+
+        assert station.x == station_1.x, (
+            'POST-запрос авторизованного пользователя с некорректными'
+            f' данными к {self.state_url.format(id=station_1.id)} '
+            'не должен изменить положение станции в пространстве.'
+        )
+
+        assert station.condition == station_1.condition, (
+            'POST-запрос авторизованного пользователя с некорректными'
+            f' данными к {self.state_url.format(id=station_1.id)} '
+            'не должен изменить состояние станции.'
+        )
+
+        assert station.broken_date == station_1.broken_date, (
+            'POST-запрос авторизованного пользователя с некорректными'
+            f' данными к {self.state_url.format(id=station_1.id)} '
+            'не должен изменить дату поломки станции.'
         )
