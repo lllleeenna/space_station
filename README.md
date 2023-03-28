@@ -21,7 +21,7 @@
 - Django 3.2.16
 - djangorestframework 3.12.4
 - Pytest
-- 
+- swagger
 
 ## Реализованы следующие эндпойнты:
 * GET, POST: /stations/ - Просмотр списка станций, создание станции
@@ -81,3 +81,7 @@ python manage.py migrate
 ```
 python manage.py runserver
 ```
+
+На основе написанных эндпоинтов генерируется swagger, 
+доступен по ссылке http://127.0.0.1:8000/api/schema/swagger/. 
+Для генерации документации используется drf-spectacular. 
